@@ -1,2 +1,5 @@
 # benchmarking-cv-models
-Code for simple benchmarking of deep computer vision models
+
+## Preparing
+
+Prepare Pre-commit hooks: `pre-commit install`
