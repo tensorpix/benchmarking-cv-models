@@ -2,6 +2,7 @@ import argparse
 from pprint import pprint
 
 import pkg_resources
+import torch
 from lightning import Trainer
 from torch.utils.data import DataLoader
 from torchvision.models import (
@@ -61,7 +62,7 @@ def main(args):
     print("Arguments:")
     pprint(args_dict)
 
-    dataset = InMemoryDataset()
+    dataset = InMemoryDataset(width=args.width, height=args.width)
     data_loader = DataLoader(
         dataset,
         num_workers=args.n_workers,
@@ -86,6 +87,16 @@ def main(args):
 
 
 if __name__ == "__main__":
+    if not torch.cuda.is_available():
+        raise ValueError("CUDA device not found on this system.")
+    else:
+        print("CUDA Device Name:", torch.cuda.get_device_name(0))
+        print("CUDNN version:", torch.backends.cudnn.version())
+        print(
+            "CUDA Device Total Memory: "
+            + f"{(torch.cuda.get_device_properties(0).total_memory / 1e9):.2f} GB",
+        )
+
     parser = argparse.ArgumentParser(description="Benchmark CV models training on GPU.")
 
     parser.add_argument("--batch-size", type=int, required=True)
@@ -93,8 +104,8 @@ if __name__ == "__main__":
     parser.add_argument("--precision", type=str, default="32")
     parser.add_argument("--n-workers", type=int, default=4)
 
-    parser.add_argument("--width", type=int, default=256)
-    parser.add_argument("--height", type=int, default=256)
+    parser.add_argument("--width", type=int, default=224)
+    parser.add_argument("--height", type=int, default=224)
 
     parser.add_argument("--warmup-steps", type=int, default=50)
     parser.add_argument("--model", type=str, default="resnet50")
