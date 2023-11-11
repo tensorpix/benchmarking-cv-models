@@ -16,6 +16,8 @@ repos:
         args: ["--maxkb=350", "--enforce-all"]
       - id: detect-private-key
       - id: requirements-txt-fixer
+      - id: mixed-line-ending
+      - id: check-merge-conflict
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.3.1
