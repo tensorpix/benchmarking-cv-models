@@ -1,18 +1,16 @@
 import argparse
 from pprint import pprint
 
-import pkg_resources
 import torch
 from lightning import Trainer
+from pip._internal.operations import freeze
 from torch.utils.data import DataLoader
 from torchvision.models import (
     convnext_base,
     efficientnet_v2_m,
-    fasterrcnn_resnet50_fpn_v2,
     mobilenet_v3_large,
     resnet50,
     resnext50_32x4d,
-    ssd300_vgg16,
     swin_b,
     vgg16,
     vit_b_16,
@@ -31,15 +29,15 @@ ARCHITECTURES = {
     "resnext50": resnext50_32x4d,
     "swin": swin_b,
     "vit": vit_b_16,
-    "ssd_vgg16": ssd300_vgg16,
-    "fasterrcnn_resnet50_v2": fasterrcnn_resnet50_fpn_v2,
+    # TODO"ssd_vgg16": ssd300_vgg16,
+    # TODO "fasterrcnn_resnet50_v2": fasterrcnn_resnet50_fpn_v2,
 }
 
 
 def print_requirements():
-    env = dict(tuple(str(ws).split()) for ws in pkg_resources.working_set)
-    for k, v in env.items():
-        print(f"{k}=={v}")
+    pkgs = freeze.freeze()
+    for pkg in pkgs:
+        print(pkg)
 
 
 def main(args):
@@ -71,8 +69,8 @@ def main(args):
         devices=args.devices,
     )
 
-    if args.model.lower in ARCHITECTURES:
-        model = ARCHITECTURES[args.model.lower]()
+    if args.model.lower() in ARCHITECTURES:
+        model = ARCHITECTURES[args.model.lower()]()
     else:
         raise ValueError("Architecture not supported.")
 
@@ -103,7 +101,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--precision", choices=["32", "16", "16-mixed", "bf16-mixed"], default="32"
     )
-    parser.add_argument("--n-workers", type=int, default=4)
+    parser.add_argument(
+        "--n-workers",
+        type=int,
+        default=4,
+        help="Number of Data Loader workers. CPU shouldn't be a bottleneck with 4+.",
+    )
     parser.add_argument("--devices", type=int, default=1)
 
     parser.add_argument("--width", type=int, default=192, help="Input width")
