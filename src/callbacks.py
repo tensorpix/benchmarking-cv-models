@@ -29,13 +29,15 @@ class BenchmarkCallback(Callback):
             trainer.world_size * in_w * in_h * batch_size * benchmark_steps / 1e6
         )
 
-        elapsed_time = self.end_time - self.start_time
-        mpx_s = processed_megapixels / (elapsed_time + 1e-7)
+        elapsed_time = (
+            self.end_time - self.start_time
+        ) + 1e-7  # for numerical stability
+        mpx_s = processed_megapixels / (elapsed_time)
 
         processed_imgs = batch_size * benchmark_steps * trainer.world_size
-        images_s = processed_imgs / (elapsed_time + 1e-7)
+        images_s = processed_imgs / (elapsed_time)
 
-        batches_s = benchmark_steps * trainer.world_size / (elapsed_time + 1e-7)
+        batches_s = benchmark_steps * trainer.world_size / elapsed_time
 
         print(f"Benchmark finished in {elapsed_time:.1f} seconds")
         print(

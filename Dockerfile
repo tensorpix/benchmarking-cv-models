@@ -6,4 +6,4 @@ RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 COPY src/ /workdir/src
 WORKDIR /workdir/src
 
-ENTRYPOINT [ "python3 -m src.train" ]
+ENTRYPOINT [ "python3", "-m", "src.train" ]

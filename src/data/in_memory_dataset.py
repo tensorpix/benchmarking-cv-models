@@ -23,6 +23,4 @@ class InMemoryDataset(Dataset):
         """
         Must return a tensor of shape C x H x W with values in [0, 1] range.
         """
-        return torch.randn(
-            self.n_channels, self.height, self.width, dtype=torch.float32
-        )
+        return torch.rand(self.n_channels, self.height, self.width, dtype=torch.float32)

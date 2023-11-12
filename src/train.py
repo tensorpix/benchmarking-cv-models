@@ -6,12 +6,13 @@ import torch
 from lightning import Trainer
 from torch.utils.data import DataLoader
 from torchvision.models import (
-    alexnet,
     convnext_base,
     efficientnet_v2_m,
+    fasterrcnn_resnet50_fpn_v2,
     mobilenet_v3_large,
     resnet50,
     resnext50_32x4d,
+    ssd300_vgg16,
     swin_b,
     vgg16,
     vit_b_16,
@@ -21,36 +22,24 @@ from src.callbacks import BenchmarkCallback
 from src.data.in_memory_dataset import InMemoryDataset
 from src.models.lightning_modules import LitClassification
 
+ARCHITECTURES = {
+    "resnet50": resnet50,
+    "convnext": convnext_base,
+    "vgg16": vgg16,
+    "efficient_net_v2": efficientnet_v2_m,
+    "mobilenet_v3": mobilenet_v3_large,
+    "resnext50": resnext50_32x4d,
+    "swin": swin_b,
+    "vit": vit_b_16,
+    "ssd_vgg16": ssd300_vgg16,
+    "fasterrcnn_resnet50_v2": fasterrcnn_resnet50_fpn_v2,
+}
+
 
 def print_requirements():
     env = dict(tuple(str(ws).split()) for ws in pkg_resources.working_set)
     for k, v in env.items():
         print(f"{k}=={v}")
-
-
-def choose_model(model_name: str):
-    model_name = model_name.lower()
-
-    if model_name == "resnet50":
-        return resnet50()
-    elif model_name == "convnext":
-        return convnext_base()
-    elif model_name == "vgg16":
-        return vgg16()
-    elif model_name == "alexnet":
-        return alexnet()
-    elif model_name == "efficient_net_v2":
-        return efficientnet_v2_m()
-    elif model_name == "mobilenet_v3":
-        return mobilenet_v3_large()
-    elif model_name == "resnext_50":
-        return resnext50_32x4d()
-    elif model_name == "swin":
-        return swin_b()
-    elif model_name == "vit":
-        return vit_b_16()
-    else:
-        raise ValueError(f"Unsupported model name: {model_name}")
 
 
 def main(args):
@@ -73,15 +62,20 @@ def main(args):
     )
 
     trainer = Trainer(
-        accelerator="gpu",
+        accelerator=args.accelerator,
         strategy="ddp",
         precision=args.precision,
         max_steps=args.n_iters + args.warmup_steps,
         max_epochs=1,
         callbacks=[BenchmarkCallback(warmup_steps=args.warmup_steps)],
+        devices=args.devices,
     )
 
-    model = choose_model(args.model)
+    if args.model.lower in ARCHITECTURES:
+        model = ARCHITECTURES[args.model.lower]()
+    else:
+        raise ValueError("Architecture not supported.")
+
     model = LitClassification(model=model)
     trainer.fit(model=model, train_dataloaders=data_loader)
 
@@ -100,16 +94,39 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Benchmark CV models training on GPU.")
 
     parser.add_argument("--batch-size", type=int, required=True)
-    parser.add_argument("--n-iters", type=int, default=300)
-    parser.add_argument("--precision", type=str, default="32")
+    parser.add_argument(
+        "--n-iters",
+        type=int,
+        default=300,
+        help="Number of training iterations to benchmark for. One iteration = one batch update",
+    )
+    parser.add_argument(
+        "--precision", choices=["32", "16", "16-mixed", "bf16-mixed"], default="32"
+    )
     parser.add_argument("--n-workers", type=int, default=4)
+    parser.add_argument("--devices", type=int, default=1)
 
-    parser.add_argument("--width", type=int, default=224)
-    parser.add_argument("--height", type=int, default=224)
+    parser.add_argument("--width", type=int, default=192, help="Input width")
+    parser.add_argument("--height", type=int, default=192, help="Input height")
 
     parser.add_argument("--warmup-steps", type=int, default=50)
-    parser.add_argument("--model", type=str, default="resnet50")
+    parser.add_argument(
+        "--accelerator", choices=["gpu"], default="gpu", help="Accelerator to use."
+    )
+    parser.add_argument(
+        "--model",
+        default="resnet50",
+        choices=list(ARCHITECTURES.keys()),
+        help="Architecture to benchmark.",
+    )
     parser.add_argument("--list-requirements", action="store_true")
 
     args = parser.parse_args()
+
+    if args.n_iters <= 0:
+        raise ValueError("Number of iterations must be > 0")
+
+    if args.warmup_steps <= 0:
+        raise ValueError("Number of warmup steps must be > 0")
+
     main(args=args)
