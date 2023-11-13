@@ -1,4 +1,5 @@
 lightning==2.1.1
+protobuf==3.20.*
 segmentation-models-pytorch==0.3.3
 six==1.16.0
 torchvision==0.16.0 
