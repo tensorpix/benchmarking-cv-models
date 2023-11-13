@@ -1,6 +1,9 @@
+import logging
 import time
 
 from lightning.pytorch.callbacks import Callback
+
+logger = logging.getLogger("benchmark")
 
 
 class BenchmarkCallback(Callback):
@@ -10,15 +13,20 @@ class BenchmarkCallback(Callback):
         self.end_time = 0
 
     def on_fit_start(self, trainer, pl_module):
-        print(f"Benchmark started. Number of warmup iterations: {self.warmup_steps}")
+        logger.info(
+            f"Benchmark started. Number of warmup iterations: {self.warmup_steps}"
+        )
 
     def on_train_batch_start(self, trainer, pl_module, batch, batch_idx: int):
         if batch_idx == self.warmup_steps:
+            logger.info(
+                f"Completed {self.warmup_steps} warmup steps. Benchmark timer started."
+            )
             self.start_time = time.time()
 
     def on_fit_end(self, trainer, pl_module):
         self.end_time = time.time()
-        print("Benchmark Finished")
+        logger.info("Fit function finished")
 
         dataset = trainer.train_dataloader.dataset
         batch_size = trainer.train_dataloader.batch_size
@@ -39,8 +47,8 @@ class BenchmarkCallback(Callback):
 
         batches_s = benchmark_steps * trainer.world_size / elapsed_time
 
-        print(f"Benchmark finished in {elapsed_time:.1f} seconds")
-        print(
+        logger.info(f"Benchmark finished in {elapsed_time:.1f} seconds")
+        logger.info(
             f"Average training throughput: {mpx_s:.2f} Mpx/s (megapixels per second) | "
             + f"{images_s:.2f} images/s | {batches_s:.2f} batches/s"
         )

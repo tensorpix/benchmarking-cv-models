@@ -1,6 +1,6 @@
 import argparse
-from pprint import pprint
 
+import segmentation_models_pytorch as smp
 import torch
 from lightning import Trainer
 from pip._internal.operations import freeze
@@ -16,9 +16,13 @@ from torchvision.models import (
     vit_b_16,
 )
 
+from src import log
 from src.callbacks import BenchmarkCallback
 from src.data.in_memory_dataset import InMemoryDataset
 from src.models.lightning_modules import LitClassification
+
+logger = log.setup_custom_logger()
+
 
 ARCHITECTURES = {
     "resnet50": resnet50,
@@ -29,6 +33,7 @@ ARCHITECTURES = {
     "resnext50": resnext50_32x4d,
     "swin": swin_b,
     "vit": vit_b_16,
+    "unet_resnet50": smp.Unet
     # TODO"ssd_vgg16": ssd300_vgg16,
     # TODO "fasterrcnn_resnet50_v2": fasterrcnn_resnet50_fpn_v2,
 }
@@ -37,17 +42,15 @@ ARCHITECTURES = {
 def print_requirements():
     pkgs = freeze.freeze()
     for pkg in pkgs:
-        print(pkg)
+        logger.info(pkg)
 
 
 def main(args):
     if args.list_requirements:
         print_requirements()
-        print()
 
     args_dict = vars(args)
-    print("Arguments:")
-    pprint(args_dict)
+    logger.info(f"User Arguments {args_dict}")
 
     dataset = InMemoryDataset(width=args.width, height=args.width)
     data_loader = DataLoader(
@@ -69,8 +72,14 @@ def main(args):
         devices=args.devices,
     )
 
-    if args.model.lower() in ARCHITECTURES:
-        model = ARCHITECTURES[args.model.lower()]()
+    if args.model in ARCHITECTURES:
+        if args.model == "unet_resnet50":
+            model = ARCHITECTURES[args.model](
+                encoder_name="resnet50", encoder_weights=None
+            )
+        else:
+            model = ARCHITECTURES[args.model]()
+
     else:
         raise ValueError("Architecture not supported.")
 
@@ -79,14 +88,15 @@ def main(args):
 
 
 if __name__ == "__main__":
+    logger.info("########## STARTING NEW BENCHMARK RUN ###########")
+
     if not torch.cuda.is_available():
         raise ValueError("CUDA device not found on this system.")
     else:
-        print("CUDA Device Name:", torch.cuda.get_device_name(0))
-        print("CUDNN version:", torch.backends.cudnn.version())
-        print(
-            "CUDA Device Total Memory: "
-            + f"{(torch.cuda.get_device_properties(0).total_memory / 1e9):.2f} GB",
+        logger.info(f"CUDA Device Name: {torch.cuda.get_device_name(0)}")
+        logger.info(f"CUDNN version: {torch.backends.cudnn.version()}")
+        logger.info(
+            f"CUDA Device Total Memory: {(torch.cuda.get_device_properties(0).total_memory / 1e9):.2f} GB"
         )
 
     parser = argparse.ArgumentParser(description="Benchmark CV models training on GPU.")
