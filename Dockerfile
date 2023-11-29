@@ -1,4 +1,14 @@
-FROM nvcr.io/nvidia/pytorch:23.10-py3
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
+
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+	curl \
+	python3-dev \
+	python3-distutils && \
+	apt clean && \
+	rm -rf /var/lib/apt/lists/*
+
+RUN curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py && \
+	python3 /tmp/get-pip.py
 
 COPY requirements.txt /tmp/requirements.txt
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
