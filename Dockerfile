@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.0.1-cudnn8-devel-ubuntu22.04
+FROM nvidia/cuda:12.0.1-cudnn8-runtime-ubuntu22.04
 
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 	python3 \
