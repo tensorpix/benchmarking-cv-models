@@ -66,7 +66,7 @@ def main(args):
         accelerator=args.accelerator,
         strategy="ddp",
         precision=args.precision,
-        max_steps=args.n_iters + args.warmup_steps,
+        limit_train_batches=args.n_iters + args.warmup_steps,
         max_epochs=1,
         callbacks=[BenchmarkCallback(warmup_steps=args.warmup_steps)],
         devices=args.devices,
@@ -119,10 +119,10 @@ if __name__ == "__main__":
     )
     parser.add_argument("--devices", type=int, default=1)
 
-    parser.add_argument("--width", type=int, default=192, help="Input width")
-    parser.add_argument("--height", type=int, default=192, help="Input height")
+    parser.add_argument("--width", type=int, default=224, help="Input width")
+    parser.add_argument("--height", type=int, default=224, help="Input height")
 
-    parser.add_argument("--warmup-steps", type=int, default=50)
+    parser.add_argument("--warmup-steps", type=int, default=100)
     parser.add_argument(
         "--accelerator", choices=["gpu"], default="gpu", help="Accelerator to use."
     )
