@@ -17,6 +17,12 @@ Prepare Pre-commit hooks: `pre-commit install`
 
 ## Building image
 
+### Prerequisites
+
+Your host system must have NVIDIA driver version 525 or higher installed.
+
+### Steps
+
 0. **OPTIONAL:** Choose the base image in `Dockerfile`. The image must have CUDA installed.
 1. Build `docker build -t cv-benchmark .`
 
