@@ -1,0 +1,45 @@
+name: CUDA12.0 Docker image build and push to ghcr
+
+on:
+  push:
+    branches: main # [ main ]
+  pull_request:
+    branches: main
+  workflow_disptach:
+
+env:
+  REGISRTY: ghcr.io
+  IMAGE_NAME: aimages-ai/benchmarking-cv-models
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Log in to the container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true 
+          tags: ${{steps.meta.outputs.tags}}
+          labels: ${{steps.meta.outputs.labels}}
+
