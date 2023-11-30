@@ -36,7 +36,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: -f Dockerfile120
+          context: Dockerfile120
           push: true 
           tags: latest
           labels: ${{steps.meta.outputs.labels}}
