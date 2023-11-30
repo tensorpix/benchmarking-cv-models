@@ -12,7 +12,7 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py && \
 COPY requirements.txt /tmp/requirements.txt
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 
-COPY ../../src /workdir/src
+COPY ./src /workdir/src
 WORKDIR /workdir
 
 ENTRYPOINT [ "python3", "-m", "src.train" ]
