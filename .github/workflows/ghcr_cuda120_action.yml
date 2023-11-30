@@ -2,9 +2,8 @@ name: CUDA12.0 Docker image build and push to ghcr
 
 on:
   push:
-    branches: main # [ main ]
   pull_request:
-    branches: main
+    branches: [master]
 
 env:
   REGISRTY: ghcr.io
