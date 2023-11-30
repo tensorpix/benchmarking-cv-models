@@ -36,7 +36,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./dockerfiles/cuda120/
+          context: .
+          dockerfile: dockerfiles/cuda120/Dockerfile
           push: true 
           tags: latest
           labels: ${{steps.meta.outputs.labels}}
