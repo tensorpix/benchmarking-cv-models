@@ -37,8 +37,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          dockerfile: dockerfiles/cuda120/Dockerfile
+          file: dockerfiles/cuda120/Dockerfile
           push: true 
           tags: latest
+          no-cache: true
           labels: ${{steps.meta.outputs.labels}}
 
