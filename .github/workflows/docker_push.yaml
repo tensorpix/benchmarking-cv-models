@@ -41,7 +41,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Extract metadata (tags, labels) for Docker
-        id: meta
+        id: meta2
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-cuda118
@@ -51,5 +51,5 @@ jobs:
           context: .
           file: dockerfiles/cuda118/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta2.outputs.tags }}
+          labels: ${{ steps.meta2.outputs.labels }}
