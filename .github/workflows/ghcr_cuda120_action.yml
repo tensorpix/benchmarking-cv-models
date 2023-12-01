@@ -7,11 +7,10 @@ on:
 
 env:
   REGISRTY: ghcr.io
-  IMAGE_NAME: aimages-ai/benchmarking-cv-models
+  IMAGE_NAME: ${{github.repository}}
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       packages: write
@@ -40,6 +39,5 @@ jobs:
           file: dockerfiles/cuda120/Dockerfile
           push: true 
           tags: latest
-          no-cache: true
+          #no-cache: true
           labels: ${{steps.meta.outputs.labels}}
-
