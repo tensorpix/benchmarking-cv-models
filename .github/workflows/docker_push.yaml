@@ -27,7 +27,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract metadata (tags, labels) for Docker
-        id: meta
+        id: meta_120
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-cuda120
@@ -37,11 +37,11 @@ jobs:
           context: .
           file: dockerfiles/cuda120/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta_120.outputs.tags }}
+          labels: ${{ steps.meta_120.outputs.labels }}
 
       - name: Extract metadata (tags, labels) for Docker
-        id: meta2
+        id: meta_118
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-cuda118
@@ -51,5 +51,5 @@ jobs:
           context: .
           file: dockerfiles/cuda118/Dockerfile
           push: true
-          tags: ${{ steps.meta2.outputs.tags }}
-          labels: ${{ steps.meta2.outputs.labels }}
+          tags: ${{ steps.meta_118.outputs.tags }}
+          labels: ${{ steps.meta_118.outputs.labels }}
