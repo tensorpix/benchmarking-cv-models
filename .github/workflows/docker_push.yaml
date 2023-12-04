@@ -2,9 +2,7 @@
 name: Create and publish a Docker image
 
 # Configures this workflow to run every time a change is pushed to the branch called `release`.
-on:
-# TODO: do this only on merge with master, not on every push 
-  push:
+on: workflow_dispatch
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }} #probaj mozda lowercase idk microsoft lik je reka
@@ -32,7 +30,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       #CUDA120 steps
       - 
-        name: Extract metadata (tags, labels) for Docker
+        name: Extract cuda120 image metadata
         id: meta_120
         uses: docker/metadata-action@v3
         with:
@@ -40,7 +38,7 @@ jobs:
           tags: cuda120
       
       - 
-        name: Build and push Docker image
+        name: Build and push cuda120 image
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -50,15 +48,15 @@ jobs:
           labels: ${{ steps.meta_120.outputs.labels }}
       #CUDA118 steps
       - 
-        name: Extract metadata (tags, labels) for Docker
+        name: Extract cuda118 image metadata
         id: meta_118
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-cuda118
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: cuda118
       
       - 
-        name: Build and push Docker image
+        name: Build and push cuda118 image
         uses: docker/build-push-action@v5
         with:
           context: .
