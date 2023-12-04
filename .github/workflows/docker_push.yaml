@@ -1,21 +1,17 @@
-#
 name: Create and push cuda118 + cuda120 images to this repo's packages
 
-# Configures this workflow to run every time a change is pushed to the branch called `release`.
 on: workflow_dispatch
+
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }} #probaj mozda lowercase idk microsoft lik je reka
+  IMAGE_NAME: ${{ github.repository }}
 
-# There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
   build-and-push-cuda-images:
     runs-on: ubuntu-latest
-    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read
       packages: write
-      # 
     steps:
       - 
         name: Checkout repository
