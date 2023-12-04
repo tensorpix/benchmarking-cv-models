@@ -1,9 +1,10 @@
 name: Create and push cuda118 + cuda120 images to this repo's packages
 
-on: workflow_dispatch: {}
-    push:
-    branches:
-      - 'ghcr_cuda_images'
+on: 
+  workflow_dispatch: {}
+  push:
+  branches:
+    - 'ghcr_cuda_images'
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
