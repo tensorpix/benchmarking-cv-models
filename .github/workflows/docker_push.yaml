@@ -1,17 +1,22 @@
 name: Create and push cuda118 + cuda120 docker images to this repo's packages
 
 on:
+  workflow_run:
+    workflows: ["Run pre-commit hooks"]
+    types:
+      - completed
   push:
     branches:
       - master
   workflow_dispatch: {}
-
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-push-cuda-images:
+  #this will make it so that the docker images get built only if linting is successful
+  if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
