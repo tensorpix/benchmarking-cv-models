@@ -16,6 +16,11 @@ jobs:
       statuses: write
 
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: pre-commit-ci/lite-action@v1.0.1
         if: always()
         with:
