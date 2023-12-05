@@ -41,7 +41,7 @@ jobs:
           context: .
           file: dockerfiles/cuda120/Dockerfile
           push: true
-          tags: ${{ steps.meta_120.outputs.tags }}
+          tags: ${{ steps.meta_120.outputs.tags }}, ghcr.io/tensorpix/benchmarking-cv-models:latest #hardcode latest image tag? :))
           labels: ${{ steps.meta_120.outputs.labels }}
       #CUDA118 steps
       - 
