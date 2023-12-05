@@ -21,14 +21,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Lint Code Base
-        uses: super-linter/super-linter/slim@v5
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_BASH: true
-          VALIDATE_DOCKERFILE_HADOLINT: true
-          VALIDATE_MARKDOWN: true
-          VALIDATE_PYTHON_BLACK: true
-          VALIDATE_PYTHON_FLAKE8: true
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: pre-commit-ci/lite-action@v1.0.1
+        if: always()
+        with:
+          msg: apply pre-commit hooks
