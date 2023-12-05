@@ -11,13 +11,15 @@ from torchvision.models import (
     mobilenet_v3_large,
     resnet50,
     resnext50_32x4d,
-    swin_b,vgg16,vit_b_16,
+    swin_b,
+    vgg16,
+    vit_b_16,
 )
-from src.models.lightning_modules import LitClassification
+
 from src import log
 from src.callbacks import BenchmarkCallback
 from src.data.in_memory_dataset import InMemoryDataset
-
+from src.models.lightning_modules import LitClassification
 
 logger = log.setup_custom_logger()
 
@@ -33,7 +35,7 @@ ARCHITECTURES = {
     "vit": vit_b_16,
     "unet_resnet50": smp.Unet
     # TODO"ssd_vgg16": ssd300_vgg16,
-    #TODO "fasterrcnn_resnet50_v2": fasterrcnn_resnet50_fpn_v2,
+    # TODO "fasterrcnn_resnet50_v2": fasterrcnn_resnet50_fpn_v2,
 }
 
 

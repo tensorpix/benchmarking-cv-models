@@ -5,9 +5,9 @@ def setup_custom_logger(name: str = "benchmark"):
     logger = logging.getLogger(name)
 
     sh = logging.StreamHandler()
-    fh = logging.FileHandler("benchmark.log")  
+    fh = logging.FileHandler("benchmark.log")
 
-    formatter =  logging.Formatter("%(asctime)s - %(message)s")
+    formatter = logging.Formatter("%(asctime)s - %(message)s")
     formatter_file = logging.Formatter(
         "%(asctime)s - %(module)s - %(levelname)s - %(message)s"
     )
