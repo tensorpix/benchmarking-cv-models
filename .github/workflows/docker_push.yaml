@@ -1,7 +1,6 @@
 name: Create and push cuda118 + cuda120 docker images to this repo's packages
 
 on:
-  push:
   workflow_dispatch: {}
 
 env:
