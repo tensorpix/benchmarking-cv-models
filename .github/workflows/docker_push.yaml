@@ -2,15 +2,36 @@ name: Create and push cuda118 + cuda120 docker images to this repo's packages
 
 on:
   push:
-    branches:
-      - master
+    #branches:
+    #  - master
   workflow_dispatch: {}
+  #pull_request:
+    #branches: [master]
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  lint-repo:
+    name: Run pre-commit hooks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      statuses: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pre-commit-ci/lite-action@v1.0.1
+        if: always()
+        with:
+          msg: apply pre-commit hooks
+
   build-and-push-cuda-images:
+    needs: lint-repo
     runs-on: ubuntu-latest
     permissions:
       contents: read
