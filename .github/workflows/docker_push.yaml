@@ -1,0 +1,67 @@
+name: Create and push cuda118 + cuda120 docker images to this repo's packages
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch: {}
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push-cuda-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - 
+        name: Checkout repository
+        uses: actions/checkout@v4
+  
+      - 
+        name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      #CUDA118 steps
+      - 
+        name: Extract cuda118 image metadata
+        id: meta_118
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: cuda118
+      
+      - 
+        name: Build and push cuda118 image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: dockerfiles/cuda118/Dockerfile
+          push: true
+          tags: ${{ steps.meta_118.outputs.tags }}
+          labels: ${{ steps.meta_118.outputs.labels }}
+      #CUDA120 steps
+      - 
+        name: Extract cuda120 image metadata
+        id: meta_120
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=cuda120
+            type=raw,value=latest  
+      - 
+        name: Build and push cuda120 image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: dockerfiles/cuda120/Dockerfile
+          push: true
+          tags: ${{ steps.meta_120.outputs.tags }}
+          labels: ${{ steps.meta_120.outputs.labels }}
