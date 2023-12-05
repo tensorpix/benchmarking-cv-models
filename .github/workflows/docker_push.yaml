@@ -63,3 +63,22 @@ jobs:
           push: true
           tags: ${{ steps.meta_118.outputs.tags }}
           labels: ${{ steps.meta_118.outputs.labels }}
+      #CUDA117 steps
+      - 
+        name: Extract cuda118 image metadata
+        id: meta_117
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: cuda117
+      
+      - 
+        name: Build and push cuda118 image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: dockerfiles/cuda117/Dockerfile
+          push: true
+          tags: ${{ steps.meta_117.outputs.tags }}
+          labels: ${{ steps.meta_117.outputs.labels }}
+
