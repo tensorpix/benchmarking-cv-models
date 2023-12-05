@@ -23,7 +23,6 @@ from src.models.lightning_modules import LitClassification
 
 logger = log.setup_custom_logger()
 
-
 ARCHITECTURES = {
     "resnet50": resnet50,
     "convnext": convnext_base,
