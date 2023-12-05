@@ -2,6 +2,7 @@ name: Run pre-commit hooks
 
 on:
   push:
+    branches: [master]
   pull_request:
     branches: [master]
 
