@@ -23,7 +23,7 @@ from src.models.lightning_modules import LitClassification
 
 logger = log.setup_custom_logger()
 
-
+# oh wow this comment is really long i wonder how the precomiit is gonna reactoh wow this comment is really long i wonder how the precomiit is gonna reactoh wow this comment is really long i wonder how the precomiit is gonna react
 ARCHITECTURES = {
     "resnet50": resnet50,
     "convnext": convnext_base,
