@@ -33,8 +33,9 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: cuda120
-      
+          tags: |
+            type=raw,value=cuda120
+            type=raw,value=latest  
       - 
         name: Build and push cuda120 image
         uses: docker/build-push-action@v5
@@ -42,7 +43,7 @@ jobs:
           context: .
           file: dockerfiles/cuda120/Dockerfile
           push: true
-          tags: ${{ steps.meta_120.outputs.tags }}, ghcr.io/tensorpix/benchmarking-cv-models:latest #hardcode latest image tag? :))
+          tags: ${{ steps.meta_120.outputs.tags }} #, ghcr.io/tensorpix/benchmarking-cv-models:latest #hardcode latest image tag? :))
           labels: ${{ steps.meta_120.outputs.labels }}
       #CUDA118 steps
       - 
