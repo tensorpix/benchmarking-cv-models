@@ -66,7 +66,8 @@ class BenchmarkCallback(Callback):
             + f"{images_s:.2f} images/s | {batches_s:.2f} batches/s"
         )
 
-        csv_path = "benchmark.csv"
+        os.makedirs("benchmarks", exist_ok=True)
+        csv_path = os.path.join("benchmarks", "benchmark.csv")
         file_exists = os.path.isfile(csv_path) and os.stat(csv_path).st_size >= 0
         with open(csv_path, "a") as file:
             writer = csv.writer(file)
