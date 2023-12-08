@@ -16,7 +16,7 @@ Such features can significantly affect benchmark performance so it's important t
 
 [Our](https://tensorpix.ai) ML team had a dilemma while choosing the best GPU for our budget. GPU X was 2x the price of GPU Y, but we couldn't find reliable data that shows if GPU X was also 2x the speed of GPU Y.
 
-There were some benchmarks, but very few of them were specific for computer vision tasks. So... we created our own mini-library that does this.
+There were [some benchmarks](https://lambdalabs.com/gpu-benchmarks), but very few of them were specific for computer vision tasks and even fewer for the GPUs we wanted to test. So we created a docker image that does this with minimal setup.
 
 You can use this benchmark repo to:
 
