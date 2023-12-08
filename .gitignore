@@ -1,5 +1,8 @@
 lightning_logs/
 
+*.csv
+benchmarks/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

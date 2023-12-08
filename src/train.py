@@ -67,7 +67,14 @@ def main(args):
         precision=args.precision,
         limit_train_batches=args.n_iters + args.warmup_steps,
         max_epochs=1,
-        callbacks=[BenchmarkCallback(warmup_steps=args.warmup_steps)],
+        callbacks=[
+            BenchmarkCallback(
+                warmup_steps=args.warmup_steps,
+                model_name=args.model,
+                precision=args.precision,
+                workers=args.n_workers,
+            )
+        ],
         devices=args.devices,
     )
 
