@@ -1,16 +1,29 @@
+import csv
 import logging
+import os
 import time
+from datetime import datetime
 
+import torch
 from lightning.pytorch.callbacks import Callback
 
 logger = logging.getLogger("benchmark")
 
 
 class BenchmarkCallback(Callback):
-    def __init__(self, warmup_steps: int = 50):
+    def __init__(
+        self,
+        model_name: str,
+        precision: str,
+        workers: int,
+        warmup_steps: int = 50,
+    ):
         self.warmup_steps = warmup_steps
         self.start_time = 0
         self.end_time = 0
+        self.precision = precision
+        self.model = model_name
+        self.workers = workers
 
     def on_fit_start(self, trainer, pl_module):
         logger.info(
@@ -52,3 +65,48 @@ class BenchmarkCallback(Callback):
             f"Average training throughput: {mpx_s:.2f} Mpx/s (megapixels per second) | "
             + f"{images_s:.2f} images/s | {batches_s:.2f} batches/s"
         )
+
+        csv_path = "benchmark.csv"
+        file_exists = os.path.isfile(csv_path) and os.stat(csv_path).st_size >= 0
+        with open(csv_path, "a") as file:
+            writer = csv.writer(file)
+            if not file_exists:
+                writer.writerow(
+                    [
+                        "Datetime",
+                        "GPU",
+                        "cuDNN version",
+                        "N GPUs",
+                        "Data Loader workers",
+                        "Model",
+                        "Precision",
+                        "Minibatch",
+                        "Input width",
+                        "Input height",
+                        "Warmup steps",
+                        "Benchmark steps",
+                        "Mpx/s",
+                        "images/s",
+                        "batch/s",
+                    ]
+                )
+
+            data = [
+                datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                torch.cuda.get_device_name(0),
+                torch.backends.cudnn.version(),
+                trainer.world_size,
+                self.workers,
+                self.model,
+                self.precision,
+                batch_size,
+                in_w,
+                in_h,
+                self.warmup_steps,
+                benchmark_steps,
+                mpx_s,
+                images_s,
+                batches_s,
+            ]
+            writer.writerow(data)
+            logger.info("Written benchmark data to 'benchmark.csv' CSV file.")
