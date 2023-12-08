@@ -107,7 +107,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Benchmark CV models training on GPU.")
 
-    parser.add_argument("--batch-size", type=int, required=True)
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        required=True,
+        help="Minibatch size. For most reliable results set the value so 90% VRAM is filled during benchmark.",
+    )
     parser.add_argument(
         "--n-iters",
         type=int,
@@ -123,12 +128,25 @@ if __name__ == "__main__":
         default=4,
         help="Number of Data Loader workers. CPU shouldn't be a bottleneck with 4+.",
     )
-    parser.add_argument("--devices", type=int, default=1)
+    parser.add_argument(
+        "--devices",
+        type=int,
+        default=1,
+        help="Number of GPUs to use in multi-GPU setup.",
+    )
 
     parser.add_argument("--width", type=int, default=224, help="Input width")
     parser.add_argument("--height", type=int, default=224, help="Input height")
 
-    parser.add_argument("--warmup-steps", type=int, default=100)
+    parser.add_argument(
+        "--warmup-steps",
+        type=int,
+        default=100,
+        help=(
+            "Number of training iterations to use for warmup. "
+            + " The benchamrk timer starts only after the warmup iterations are finished."
+        ),
+    )
     parser.add_argument(
         "--accelerator", choices=["gpu"], default="gpu", help="Accelerator to use."
     )
@@ -138,7 +156,11 @@ if __name__ == "__main__":
         choices=list(ARCHITECTURES.keys()),
         help="Architecture to benchmark.",
     )
-    parser.add_argument("--list-requirements", action="store_true")
+    parser.add_argument(
+        "--list-requirements",
+        action="store_true",
+        help="Prints all python packages along with their versions.",
+    )
 
     args = parser.parse_args()
 
