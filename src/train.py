@@ -111,7 +111,7 @@ if __name__ == "__main__":
         "--batch-size",
         type=int,
         required=True,
-        help="Minibatch size. Set the value so >90% VRAM is filled during benchmark for most representative results.",
+        help="Minibatch size. Set the value so >90%% VRAM is filled during benchmark for most representative results.",
     )
     parser.add_argument(
         "--n-iters",
