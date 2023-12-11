@@ -61,3 +61,15 @@ To do so, use the following docker argument when running a container: `-v <host/
 We support two docker images: one for CUDA 12.0 and second for CUDA 11.8. The `12.0` version is on the latest docker tag, while `11.8` is on the `ghcr.io/tensorpix/benchmarking-cv-models:cuda118` tag.
 
 `11.8` version supports earlier NVIDIA drivers so if you run into driver related errors, try this image instead.
+
+## Metrics
+
+We use 3 metrics for the benchmark:
+
+- Images per second
+- Batches per second
+- Megapixels per second
+
+Images/s and batches/s are self-explanatory. Megapixels/s (MPx) are not usually used but we like this metric as it's input resolution independent.
+
+It's calculated according to the following formula: `(input_width_px * input_height_px * batch_size * n_gpus * n_iterations) / (elapsed_time_s * 10^6)`

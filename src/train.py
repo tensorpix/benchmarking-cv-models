@@ -33,7 +33,7 @@ ARCHITECTURES = {
     "swin": swin_b,
     "vit": vit_b_16,
     "unet_resnet50": smp.Unet
-    # TODO"ssd_vgg16": ssd300_vgg16,
+    # TODO "ssd_vgg16": ssd300_vgg16,
     # TODO "fasterrcnn_resnet50_v2": fasterrcnn_resnet50_fpn_v2,
 }
 
@@ -56,7 +56,7 @@ def main(args):
         dataset,
         num_workers=args.n_workers,
         batch_size=args.batch_size,
-        shuffle=False,
+        shuffle=True,
         pin_memory=True,
         drop_last=True,
     )
@@ -111,13 +111,13 @@ if __name__ == "__main__":
         "--batch-size",
         type=int,
         required=True,
-        help="Minibatch size. For most reliable results set the value so 90% VRAM is filled during benchmark.",
+        help="Minibatch size. Set the value so >90% VRAM is filled during benchmark for most representative results.",
     )
     parser.add_argument(
         "--n-iters",
         type=int,
-        default=300,
-        help="Number of training iterations to benchmark for. One iteration = one batch update",
+        default=200,
+        help="Number of training iterations to benchmark for. One iteration = one batch update.",
     )
     parser.add_argument(
         "--precision", choices=["32", "16", "16-mixed", "bf16-mixed"], default="32"
@@ -132,7 +132,7 @@ if __name__ == "__main__":
         "--devices",
         type=int,
         default=1,
-        help="Number of GPUs to use in multi-GPU setup.",
+        help="Number of GPUs to use.",
     )
 
     parser.add_argument("--width", type=int, default=224, help="Input width")
@@ -144,7 +144,7 @@ if __name__ == "__main__":
         default=100,
         help=(
             "Number of training iterations to use for warmup. "
-            + " The benchamrk timer starts only after the warmup iterations are finished."
+            + " The benchamrk timer starts after the warmup iterations are finished."
         ),
     )
     parser.add_argument(

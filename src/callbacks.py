@@ -62,7 +62,7 @@ class BenchmarkCallback(Callback):
 
         logger.info(f"Benchmark finished in {elapsed_time:.1f} seconds")
         logger.info(
-            f"Average training throughput: {mpx_s:.2f} Mpx/s (megapixels per second) | "
+            f"Average training throughput: {mpx_s:.2f} MPx/s (megapixels per second) | "
             + f"{images_s:.2f} images/s | {batches_s:.2f} batches/s"
         )
 
@@ -82,13 +82,13 @@ class BenchmarkCallback(Callback):
                         "Model",
                         "Precision",
                         "Minibatch",
-                        "Input width",
-                        "Input height",
+                        "Input width [px]",
+                        "Input height [px]",
                         "Warmup steps",
                         "Benchmark steps",
-                        "Mpx/s",
+                        "MPx/s",
                         "images/s",
-                        "batch/s",
+                        "batches/s",
                     ]
                 )
 
@@ -110,4 +110,4 @@ class BenchmarkCallback(Callback):
                 batches_s,
             ]
             writer.writerow(data)
-            logger.info("Written benchmark data to 'benchmark.csv' CSV file.")
+            logger.info("Written benchmark data to a CSV file.")
