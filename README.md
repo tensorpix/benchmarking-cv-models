@@ -56,6 +56,8 @@ Benchmark code will create a CSV file with benchmark results on every run. The f
 
 To do so, use the following docker argument when running a container: `-v <host/benchmark/folder>:/workdir/benchmarks`. See the [advanced example](#examples) for more details. The CSV file will reside in the mounted host directory.
 
+We also recommend that you create the `<host/benchmark/folder>` on the host before running the container as the container will create the folder under the `root` user if it doesn't exist on the host.
+
 ### Versions
 
 We support two docker images: one for CUDA 12.0 and second for CUDA 11.8. The `12.0` version is on the latest docker tag, while `11.8` is on the `ghcr.io/tensorpix/benchmarking-cv-models:cuda118` tag.
