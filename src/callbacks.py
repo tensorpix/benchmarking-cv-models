@@ -1,6 +1,7 @@
 import csv
 import logging
 import os
+import stat
 import time
 from datetime import datetime
 
@@ -116,3 +117,15 @@ class BenchmarkCallback(Callback):
                 + "save the file on your disk: "
                 + "https://github.com/tensorpix/benchmarking-cv-models#logging-results-to-a-persistent-csv-file"
             )
+
+        try:
+            os.chmod(
+                csv_path,
+                stat.S_IRUSR
+                | stat.S_IRGRP
+                | stat.S_IWUSR
+                | stat.S_IROTH
+                | stat.S_IWOTH,
+            )
+        except Exception as e:
+            logger.error(f"Failed to change csv permissions: {e}")

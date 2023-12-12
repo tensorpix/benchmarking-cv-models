@@ -67,6 +67,7 @@ def main(args):
         precision=args.precision,
         limit_train_batches=args.n_iters + args.warmup_steps,
         max_epochs=1,
+        logger=False,
         callbacks=[
             BenchmarkCallback(
                 warmup_steps=args.warmup_steps,
@@ -144,7 +145,7 @@ if __name__ == "__main__":
         default=100,
         help=(
             "Number of training iterations to use for warmup. "
-            + " The benchamrk timer starts after the warmup iterations are finished."
+            + " The benchmark timer starts after the warmup iterations are finished."
         ),
     )
     parser.add_argument(
