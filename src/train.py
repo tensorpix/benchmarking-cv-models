@@ -96,17 +96,6 @@ def main(args):
 
 
 if __name__ == "__main__":
-    logger.info("########## STARTING NEW BENCHMARK RUN ###########")
-
-    if not torch.cuda.is_available():
-        raise ValueError("CUDA device not found on this system.")
-    else:
-        logger.info(f"CUDA Device Name: {torch.cuda.get_device_name(0)}")
-        logger.info(f"CUDNN version: {torch.backends.cudnn.version()}")
-        logger.info(
-            f"CUDA Device Total Memory: {(torch.cuda.get_device_properties(0).total_memory / 1e9):.2f} GB"
-        )
-
     parser = argparse.ArgumentParser(description="Benchmark CV models training on GPU.")
 
     parser.add_argument(
@@ -165,5 +154,16 @@ if __name__ == "__main__":
 
     if args.warmup_steps <= 0:
         raise ValueError("Number of warmup steps must be > 0")
+
+    logger.info("########## STARTING NEW BENCHMARK RUN ###########")
+
+    if not torch.cuda.is_available():
+        raise ValueError("CUDA device not found on this system.")
+    else:
+        logger.info(f"CUDA Device Name: {torch.cuda.get_device_name(0)}")
+        logger.info(f"CUDNN version: {torch.backends.cudnn.version()}")
+        logger.info(
+            f"CUDA Device Total Memory: {(torch.cuda.get_device_properties(0).total_memory / 1e9):.2f} GB"
+        )
 
     main(args=args)
