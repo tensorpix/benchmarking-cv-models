@@ -50,7 +50,7 @@ In order to run benchmark docker containers you must have the following installe
 
 `docker run --rm ghcr.io/tensorpix/benchmarking-cv-models --help`
 
-### How to specifiy GPUs to use
+### How to select particular GPUs
 
 If you want to use all available GPUs, then set the `--gpus all` docker parameter.
 
