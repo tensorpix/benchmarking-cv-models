@@ -44,11 +44,17 @@ In order to run benchmark docker containers you must have the following installe
 
 **Advanced**
 
-`docker run --rm --ipc=host --ulimit memlock=-1 --gpus all -v ./benchmarks:/workdir/benchmarks ghcr.io/tensorpix/benchmarking-cv-models --batch-size 32 --n-iters 1000 --warmup-steps 100 --model resnext50 --precision 16-mixed --width 320 --height 320 --devices 3`
+`docker run --rm --ipc=host --ulimit memlock=-1 --gpus '"device=0,1"' -v ./benchmarks:/workdir/benchmarks ghcr.io/tensorpix/benchmarking-cv-models --batch-size 32 --n-iters 1000 --warmup-steps 100 --model resnext50 --precision 16-mixed --width 320 --height 320`
 
 **List all options:**
 
 `docker run --rm ghcr.io/tensorpix/benchmarking-cv-models --help`
+
+### How to select particular GPUs
+
+If you want to use all available GPUs, then set the `--gpus all` docker parameter.
+
+If want to use for example GPUs at indicies 2 and 3, set `--gpus '"device=2,3"'`.
 
 ### Logging results to a persistent CSV file
 
@@ -56,8 +62,22 @@ Benchmark code will create a CSV file with benchmark results on every run. The f
 
 To do so, use the following docker argument when running a container: `-v <host/benchmark/folder>:/workdir/benchmarks`. See the [advanced example](#examples) for more details. The CSV file will reside in the mounted host directory.
 
+We also recommend that you create the `<host/benchmark/folder>` on the host before running the container as the container will create the folder under the `root` user if it doesn't exist on the host.
+
 ### Versions
 
 We support two docker images: one for CUDA 12.0 and second for CUDA 11.8. The `12.0` version is on the latest docker tag, while `11.8` is on the `ghcr.io/tensorpix/benchmarking-cv-models:cuda118` tag.
 
 `11.8` version supports earlier NVIDIA drivers so if you run into driver related errors, try this image instead.
+
+## Metrics
+
+We use 3 metrics for the benchmark:
+
+- Images per second
+- Batches per second
+- Megapixels per second
+
+Images/s and batches/s are self-explanatory. Megapixels/s (MPx) are not usually used but we like this metric as it's input resolution independent.
+
+It's calculated according to the following formula: `(input_width_px * input_height_px * batch_size * n_gpus * n_iterations) / (elapsed_time_s * 10^6)`

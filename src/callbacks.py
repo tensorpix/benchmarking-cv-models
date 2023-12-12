@@ -1,6 +1,7 @@
 import csv
 import logging
 import os
+import stat
 import time
 from datetime import datetime
 
@@ -62,12 +63,12 @@ class BenchmarkCallback(Callback):
 
         logger.info(f"Benchmark finished in {elapsed_time:.1f} seconds")
         logger.info(
-            f"Average training throughput: {mpx_s:.2f} Mpx/s (megapixels per second) | "
+            f"Average training throughput: {mpx_s:.2f} MPx/s (megapixels per second) | "
             + f"{images_s:.2f} images/s | {batches_s:.2f} batches/s"
         )
 
-        os.makedirs("benchmarks", exist_ok=True)
-        csv_path = os.path.join("benchmarks", "benchmark.csv")
+        os.makedirs("./benchmarks", exist_ok=True)
+        csv_path = os.path.join("./benchmarks", "benchmark.csv")
         file_exists = os.path.isfile(csv_path) and os.stat(csv_path).st_size >= 0
         with open(csv_path, "a") as file:
             writer = csv.writer(file)
@@ -82,13 +83,13 @@ class BenchmarkCallback(Callback):
                         "Model",
                         "Precision",
                         "Minibatch",
-                        "Input width",
-                        "Input height",
+                        "Input width [px]",
+                        "Input height [px]",
                         "Warmup steps",
                         "Benchmark steps",
-                        "Mpx/s",
+                        "MPx/s",
                         "images/s",
-                        "batch/s",
+                        "batches/s",
                     ]
                 )
 
@@ -110,4 +111,21 @@ class BenchmarkCallback(Callback):
                 batches_s,
             ]
             writer.writerow(data)
-            logger.info("Written benchmark data to 'benchmark.csv' CSV file.")
+            logger.info(
+                "Written benchmark data to a CSV file. "
+                + "See 'Logging Results to a Persisent CSV File' section to "
+                + "save the file on your disk: "
+                + "https://github.com/tensorpix/benchmarking-cv-models#logging-results-to-a-persistent-csv-file"
+            )
+
+        try:
+            os.chmod(
+                csv_path,
+                stat.S_IRUSR
+                | stat.S_IRGRP
+                | stat.S_IWUSR
+                | stat.S_IROTH
+                | stat.S_IWOTH,
+            )
+        except Exception as e:
+            logger.error(f"Failed to change csv permissions: {e}")
