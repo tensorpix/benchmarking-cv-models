@@ -68,6 +68,7 @@ def main(args):
         limit_train_batches=args.n_iters + args.warmup_steps,
         max_epochs=1,
         logger=False,
+        enable_checkpointing=False,
         callbacks=[
             BenchmarkCallback(
                 warmup_steps=args.warmup_steps,
@@ -76,7 +77,7 @@ def main(args):
                 workers=args.n_workers,
             )
         ],
-        devices=args.devices,
+        devices=torch.cuda.device_count(),
     )
 
     if args.model in ARCHITECTURES:
@@ -128,12 +129,6 @@ if __name__ == "__main__":
         type=int,
         default=4,
         help="Number of Data Loader workers. CPU shouldn't be a bottleneck with 4+.",
-    )
-    parser.add_argument(
-        "--devices",
-        type=int,
-        default=1,
-        help="Number of GPUs to use.",
     )
 
     parser.add_argument("--width", type=int, default=224, help="Input width")

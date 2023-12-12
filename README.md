@@ -44,11 +44,17 @@ In order to run benchmark docker containers you must have the following installe
 
 **Advanced**
 
-`docker run --rm --ipc=host --ulimit memlock=-1 --gpus '"device=0,2"' -v ./benchmarks:/workdir/benchmarks ghcr.io/tensorpix/benchmarking-cv-models --batch-size 32 --n-iters 1000 --warmup-steps 100 --model resnext50 --precision 16-mixed --width 320 --height 320 --devices 2`
+`docker run --rm --ipc=host --ulimit memlock=-1 --gpus '"device=0,1"' -v ./benchmarks:/workdir/benchmarks ghcr.io/tensorpix/benchmarking-cv-models --batch-size 32 --n-iters 1000 --warmup-steps 100 --model resnext50 --precision 16-mixed --width 320 --height 320`
 
 **List all options:**
 
 `docker run --rm ghcr.io/tensorpix/benchmarking-cv-models --help`
+
+### How to specifiy GPUs to use
+
+If you want to use all available GPUs, then set the `--gpus all` docker parameter.
+
+If want to use for example GPUs at indicies 2 and 3, set `--gpus '"device=2,3"'`.
 
 ### Logging results to a persistent CSV file
 
