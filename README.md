@@ -12,7 +12,7 @@ We use [Lightning AI](https://lightning.ai/) library for benchmarks as it's a po
 It also supports features such as mixed precision, DDP, and multi-GPU training.
 Such features can significantly affect benchmark performance so it's important to offer them in benchmarks.
 
-## Why did we create this?
+## ❓ Why did we create this?
 
 [Our](https://tensorpix.ai) ML team had a dilemma while choosing the best GPU for our budget. GPU X was 2x the price of GPU Y, but we couldn't find reliable data that shows if GPU X was also 2x the speed of GPU Y.
 
@@ -26,7 +26,7 @@ You can use this benchmark repo to:
 - Test how much you gain in training speed when using Mixed-precision
 - Make pizzas (not tested)
 
-## How to benchmark
+## 📖 How to benchmark
 
 ### Prerequisites
 
@@ -70,7 +70,7 @@ We support two docker images: one for CUDA 12.0 and second for CUDA 11.8. The `1
 
 `11.8` version supports earlier NVIDIA drivers so if you run into driver related errors, try this image instead.
 
-## Metrics
+## 📊 Metrics
 
 We use 3 metrics for the benchmark:
 
