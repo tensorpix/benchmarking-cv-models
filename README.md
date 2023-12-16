@@ -24,6 +24,7 @@ You can use this benchmark repo to:
 - Benchmark various CV architectures
 - See how efficient are multi-GPU setups for a specific GPU
 - Test how much you gain in training speed when using Mixed-precision
+- Stress test the GPU(s) at near 100% utilization
 - Make pizzas (not tested)
 
 ## 📖 How to benchmark
