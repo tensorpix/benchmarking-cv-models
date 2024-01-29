@@ -5,14 +5,14 @@ default_language_version:
 
 repos:
   - repo: https://github.com/PyCQA/isort
-    rev: 5.13.0
+    rev: 5.13.2
     hooks:
       - id: isort
         name: Format imports
         args: ["--profile", "black"]
 
   - repo: https://github.com/psf/black
-    rev: 23.11.0
+    rev: 24.1.1
     hooks:
       - id: black
         name: black
@@ -42,7 +42,7 @@ repos:
         name: Upgrade code
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
+    rev: 7.0.0
     hooks:
       - id: flake8
         types: [python]
