@@ -32,7 +32,7 @@ ARCHITECTURES = {
     "resnext50": resnext50_32x4d,
     "swin": swin_b,
     "vit": vit_b_16,
-    "unet_resnet50": smp.Unet
+    "unet_resnet50": smp.Unet,
     # TODO "ssd_vgg16": ssd300_vgg16,
     # TODO "fasterrcnn_resnet50_v2": fasterrcnn_resnet50_fpn_v2,
 }
