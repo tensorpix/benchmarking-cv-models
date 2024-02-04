@@ -27,6 +27,20 @@ You can use this benchmark repo to:
 - Stress test the GPU(s) at near 100% utilization
 - Make pizzas (not tested)
 
+## 📋 Supported architectures
+
+Please open an issue if you need support for a new architecture.
+
+* ResNet50
+* ConvNext (base)
+* VGG16
+* Efficient Net v2
+* MobileNet V3
+* ResNeXt50
+* SWIN
+* VIT
+* UNet with ResNet50 backbone
+
 ## 📖 How to benchmark
 
 ### Prerequisites
