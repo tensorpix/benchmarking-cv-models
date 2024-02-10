@@ -1,13 +1,11 @@
-FROM nvidia/cuda:12.0.1-cudnn8-runtime-ubuntu22.04
+FROM ubuntu:22.04
 
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 	python3 \
+	python3-pip \
 	curl && \
 	apt clean && \
 	rm -rf /var/lib/apt/lists/*
-
-RUN curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py && \
-	python3 /tmp/get-pip.py
 
 COPY requirements.txt /tmp/requirements.txt
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
