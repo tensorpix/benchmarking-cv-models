@@ -1,3 +1,10 @@
+
+<p align="center" >
+  <img width="400" src="https://cdn.tensorpix.ai/TensorPix-Logo-color.svg" alt="Tensorpix logo"/>
+</p>
+
+---
+
 # Benchmarking CV models
 
 Docker image for simple training benchmark of popular computer vision models.
