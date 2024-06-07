@@ -8,7 +8,7 @@ class InMemoryDataset(Dataset):
         width: int = 224,
         height: int = 224,
         n_channels: int = 3,
-        dataset_size: int = int(1e6),
+        dataset_size: int = int(1e7),
     ):
         super().__init__()
         self.width = width

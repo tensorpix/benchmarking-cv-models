@@ -4,7 +4,7 @@ from torch import nn
 
 
 class LitClassification(L.LightningModule):
-    def __init__(self, model: nn.Module, optimizer: torch.optim = torch.optim.Adam):
+    def __init__(self, model: nn.Module, optimizer=torch.optim.Adam):
         super().__init__()
         self.model = model
         self.loss = nn.CrossEntropyLoss()
