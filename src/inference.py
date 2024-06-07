@@ -63,8 +63,12 @@ def benchmark_inference(
         f"Median time per {batch} {width}x{height} px frames: {median_per_batch:.4f} s\n"
     )
 
-    print(f"Model mean speed in megapixels per second: {mean_speed_mpx:.3f} MP/s")
-    print(f"Model median speed in megapixels per second: {median_speed_mpx:.3f} MP/s\n")
+    print(
+        f"Model mean throughoutput in megapixels per second: {mean_speed_mpx:.3f} MP/s"
+    )
+    print(
+        f"Model median throughoutput in megapixels per second: {median_speed_mpx:.3f} MP/s\n"
+    )
 
 
 def main(args):
@@ -84,7 +88,7 @@ def main(args):
     arch = ARCHITECTURES[args.model.lower()]
     setup = f"from torchvision.models import {arch}; model = {arch}(); model.eval()"
 
-    input_shape = [3, args.height, args.width]
+    input_shape = [args.batch_size, 3, args.height, args.width]
     precision = torch.float16 if args.precision == "16" else torch.float32
 
     x = torch.rand(*input_shape, dtype=precision)
@@ -99,7 +103,7 @@ def main(args):
         setup=setup,
         input=x,
         n_runs=args.n_iters,
-        num_threads=args.num_workers,
+        num_threads=args.n_workers,
     )
 
 
