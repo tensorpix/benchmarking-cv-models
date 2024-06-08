@@ -8,9 +8,10 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install
 	rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt --extra-index-url https://download.pytorch.org/whl/cu121
 
 COPY ./src /workdir/src
 WORKDIR /workdir
 
-ENTRYPOINT [ "python3", "-m", "src.train" ]
+ENTRYPOINT [ "python3", "-m" ]
+CMD [ "src.train" ]

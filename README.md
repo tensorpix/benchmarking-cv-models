@@ -1,4 +1,3 @@
-
 <p align="center" >
   <img width="400" src="https://cdn.tensorpix.ai/TensorPix-Logo-color.svg" alt="Tensorpix logo"/>
 </p>
@@ -38,15 +37,15 @@ You can use this benchmark repo to:
 
 Please open an issue if you need support for a new architecture.
 
-* ResNet50
-* ConvNext (base)
-* VGG16
-* Efficient Net v2
-* MobileNet V3
-* ResNeXt50
-* SWIN
-* VIT
-* UNet with ResNet50 backbone
+- ResNet50
+- ConvNext (base)
+- VGG16
+- Efficient Net v2
+- MobileNet V3
+- ResNeXt50
+- SWIN
+- VIT
+- UNet with ResNet50 backbone
 
 ## 📖 How to benchmark
 
@@ -58,19 +57,31 @@ In order to run benchmark docker containers you must have the following installe
 - NVIDIA drivers. See [Versions](#versions) when choosing the docker image.
 - [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) - required in order to use CUDA inside docker containers
 
+### Training vs Inference
+
+By default, the container will benchmark model training. If you want to benchmark model inference, append the `src.inference` to the docker run command. See examples below for more details.
+
 ### Examples
 
 **Minimal**
 
-`docker run --rm --ipc=host --ulimit memlock=-1 --gpus all ghcr.io/tensorpix/benchmarking-cv-models --batch-size 32`
+`docker run --rm --ipc=host --ulimit memlock=-1 --gpus all ghcr.io/tensorpix/benchmarking-cv-models src.train --batch-size 32`
 
 **Advanced**
 
-`docker run --rm --ipc=host --ulimit memlock=-1 --gpus '"device=0,1"' -v ./benchmarks:/workdir/benchmarks ghcr.io/tensorpix/benchmarking-cv-models --batch-size 32 --n-iters 1000 --warmup-steps 100 --model resnext50 --precision 16-mixed --width 320 --height 320`
+`docker run --rm --ipc=host --ulimit memlock=-1 --gpus '"device=0,1"' -v ./benchmarks:/workdir/benchmarks ghcr.io/tensorpix/benchmarking-cv-models src.train --batch-size 32 --n-iters 1000 --warmup-steps 100 --model resnext50 --precision 16-mixed --width 320 --height 320`
 
-**List all options:**
+**Benchmark Inference**
 
-`docker run --rm ghcr.io/tensorpix/benchmarking-cv-models --help`
+`docker run --rm --ipc=host --ulimit memlock=-1 --gpus all ghcr.io/tensorpix/benchmarking-cv-models src.inference --batch-size 32 --n-iters 1000 --model resnext50 --precision 16 --width 256 --height 256`
+
+**List all train options:**
+
+`docker run --rm ghcr.io/tensorpix/benchmarking-cv-models src.train --help`
+
+**List all inference options:**
+
+`docker run --rm ghcr.io/tensorpix/benchmarking-cv-models src.inference --help`
 
 ### How to select particular GPUs
 

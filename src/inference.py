@@ -1,8 +1,12 @@
 import argparse
-from pprint import pprint
 
 import torch
 import torch.utils.benchmark as benchmark
+
+from src import log
+from src.log import print_requirements
+
+logger = log.logger
 
 ARCHITECTURES = {
     "resnet50": "resnet50",
@@ -41,7 +45,7 @@ def benchmark_inference(
         globals={"x": input},
     )
 
-    print(
+    logger.info(
         f"Running benchmark on sample of {n_runs} runs with {num_threads} thread(s)..."
     )
     result = timer.timeit(n_runs)
@@ -49,8 +53,8 @@ def benchmark_inference(
     batch, height, width = input.size(0), input.size(-2), input.size(-1)
     total_pixels = batch * width * height
 
-    print(f"Batch size: {batch}")
-    print(f"Input resolution: {width}x{height} pixels\n")
+    logger.info(f"Batch size: {batch}")
+    logger.info(f"Input resolution: {width}x{height} pixels\n")
 
     mean_per_batch = result.mean
     median_per_batch = result.median
@@ -58,23 +62,24 @@ def benchmark_inference(
     mean_speed_mpx = (total_pixels / 1e6) / mean_per_batch
     median_speed_mpx = (total_pixels / 1e6) / median_per_batch
 
-    print(f"Mean time per {batch} {width}x{height} px frames: {mean_per_batch:.4f} s")
-    print(
-        f"Median time per {batch} {width}x{height} px frames: {median_per_batch:.4f} s\n"
+    logger.info(
+        f"Mean throughoutput per {batch} {width}x{height} px frames: {mean_per_batch:.4f} s"
+    )
+    logger.info(
+        f"Median throughoutput per {batch} {width}x{height} px frames: {median_per_batch:.4f} s\n"
     )
 
-    print(
+    logger.info(
         f"Model mean throughoutput in megapixels per second: {mean_speed_mpx:.3f} MP/s"
     )
-    print(
+    logger.info(
         f"Model median throughoutput in megapixels per second: {median_speed_mpx:.3f} MP/s\n"
     )
 
 
 def main(args):
-    args_dict = vars(args)
-    print("Arguments:")
-    pprint(args_dict)
+    if args.list_requirements:
+        print_requirements()
 
     if args.model.lower() not in ARCHITECTURES:
         raise ValueError("Architecture not supported.")
@@ -92,8 +97,8 @@ def main(args):
     precision = torch.float16 if args.precision == "16" else torch.float32
 
     x = torch.rand(*input_shape, dtype=precision)
-    x = x.cuda(0, non_blocking=True)
-    setup = f"{setup}; model.cuda(0)"
+    x = x.cuda(args.gpu_device_index, non_blocking=True)
+    setup = f"{setup}; model.cuda({args.gpu_device_index})"
 
     if args.precision == "16":
         setup = f"{setup}; model.half()"
@@ -108,16 +113,6 @@ def main(args):
 
 
 if __name__ == "__main__":
-    if not torch.cuda.is_available():
-        raise ValueError("CUDA device not found on this system.")
-    else:
-        print("CUDA Device Name:", torch.cuda.get_device_name(0))
-        print("CUDNN version:", torch.backends.cudnn.version())
-        print(
-            "CUDA Device Total Memory: "
-            + f"{(torch.cuda.get_device_properties(0).total_memory / 1e9):.2f} GB",
-        )
-
     parser = argparse.ArgumentParser(description="Benchmark CV models training on GPU.")
 
     parser.add_argument("--batch-size", type=int, required=True)
@@ -129,9 +124,10 @@ if __name__ == "__main__":
     )
     parser.add_argument("--precision", choices=["32", "16"], default="16")
     parser.add_argument("--n-workers", type=int, default=1)
+    parser.add_argument("--gpu-device-index", type=int, default=0)
 
-    parser.add_argument("--width", type=int, default=192, help="Input width")
-    parser.add_argument("--height", type=int, default=192, help="Input height")
+    parser.add_argument("--width", type=int, default=224, help="Input width")
+    parser.add_argument("--height", type=int, default=224, help="Input height")
 
     parser.add_argument(
         "--model",
@@ -145,5 +141,19 @@ if __name__ == "__main__":
 
     if args.n_iters <= 0:
         raise ValueError("Number of iterations must be > 0")
+
+    logger.info("########## STARTING NEW INFERENCE BENCHMARK RUN ###########")
+
+    if not torch.cuda.is_available():
+        raise ValueError("CUDA device not found on this system.")
+    else:
+        logger.info(
+            f"CUDA Device Name: {torch.cuda.get_device_name(args.gpu_device_index)}"
+        )
+        logger.info(f"CUDNN version: {torch.backends.cudnn.version()}")
+        logger.info(
+            "CUDA Device Total Memory: "
+            + f"{(torch.cuda.get_device_properties(args.gpu_device_index).total_memory / 1e9):.2f} GB"
+        )
 
     main(args=args)

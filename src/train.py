@@ -3,7 +3,6 @@ import argparse
 import segmentation_models_pytorch as smp
 import torch
 from lightning import Trainer
-from pip._internal.operations import freeze
 from torch.utils.data import DataLoader
 from torchvision.models import (
     convnext_base,
@@ -19,9 +18,10 @@ from torchvision.models import (
 from src import log
 from src.callbacks import BenchmarkCallback
 from src.data.in_memory_dataset import InMemoryDataset
+from src.log import print_requirements
 from src.models.lightning_modules import LitClassification
 
-logger = log.setup_custom_logger()
+logger = log.logger
 
 ARCHITECTURES = {
     "resnet50": resnet50,
@@ -36,12 +36,6 @@ ARCHITECTURES = {
     # TODO "ssd_vgg16": ssd300_vgg16,
     # TODO "fasterrcnn_resnet50_v2": fasterrcnn_resnet50_fpn_v2,
 }
-
-
-def print_requirements():
-    pkgs = freeze.freeze()
-    for pkg in pkgs:
-        logger.info(pkg)
 
 
 def main(args):
