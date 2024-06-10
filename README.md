@@ -59,7 +59,7 @@ In order to run benchmark docker containers you must have the following installe
 
 ### Training vs Inference
 
-By default, the container will benchmark model training. If you want to benchmark model inference, append the `src.inference` to the docker run command. See examples below for more details.
+To benchmark model training, append the `src.train` when running the container. If you want to benchmark model inference, append the `src.inference` to the docker run command. See examples below for more details.
 
 ### Examples
 
