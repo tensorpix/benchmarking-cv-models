@@ -26,16 +26,16 @@ def benchmark_inference(
     stmt: str,
     setup: str,
     input: torch.Tensor,
-    n_runs=100,
+    n_runs: int = 100,
     num_threads: int = 1,
 ):
     """
     Benchmark a model using torch.utils.benchmark.
 
-    When evaluating model speed in MP/s only the video height, width and batch size are taken into
-    account. The number of channels and sequence length are ignored. Speed evaluation measures
-    how fast can we process an arbitrary input video so channels and sequence length don't
-    affect the model computation speed.
+    When evaluating model throughoutput in MP/s only the image height, width and batch size are taken into
+    account. The number of channels are ignored as they are fixed to 3 channels in most cases (RGB images).
+    Speed evaluation measures how fast can we process an arbitrary input image so channels
+    don't affect the model computation speed.
     """
 
     timer = benchmark.Timer(
@@ -87,7 +87,7 @@ def main(args):
     stmt = """ \
     with torch.inference_mode():
         out = model(x)
-        out = out.clamp(0, 1).float().cpu()
+        out = out.float().cpu()
     """
 
     arch = ARCHITECTURES[args.model.lower()]
@@ -115,7 +115,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Benchmark CV models training on GPU.")
 
-    parser.add_argument("--batch-size", type=int, required=True)
+    parser.add_argument("--batch-size", type=int, required=True, default=1)
     parser.add_argument(
         "--n-iters",
         type=int,
