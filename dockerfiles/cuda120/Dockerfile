@@ -14,4 +14,3 @@ COPY ./src /workdir/src
 WORKDIR /workdir
 
 ENTRYPOINT [ "python3", "-m" ]
-CMD [ "src.train" ]
