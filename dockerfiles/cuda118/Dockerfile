@@ -13,4 +13,4 @@ RUN pip3 install --no-cache-dir -r /tmp/requirements.txt --extra-index-url https
 COPY ./src /workdir/src
 WORKDIR /workdir
 
-ENTRYPOINT [ "python3", "-m", "src.train" ]
+ENTRYPOINT [ "python3", "-m" ]
